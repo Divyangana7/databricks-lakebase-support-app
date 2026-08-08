@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Ticket #{{ '%04d' % ticket.ticket_id }}{% endblock %}
+
+{% block content %}
+  <p><a href="{{ url_for('index') }}">&larr; All tickets</a></p>
+
+  <div class="card">
+    <p class="mono muted" style="margin:0 0 4px;">#{{ '%04d' % ticket.ticket_id }}</p>
+    <h1>{{ ticket.title }}</h1>
+    <p class="muted" style="margin-top:4px;">
+      Opened by {{ ticket.created_by }} ·
+      <span class="pill {{ ticket.status }}">{{ status_labels[ticket.status] }}</span>
+      <span class="pill {{ ticket.priority }}">{{ priority_labels[ticket.priority] }} priority</span>
+    </p>
+
+    <div class="row" style="margin-top:14px;">
+      <form method="post" action="{{ url_for('update_status', ticket_id=ticket.ticket_id) }}"
+            class="inline-form">
+        <div>
+          <label for="status">Status</label>
+          <select id="status" name="status">
+            {% for s in valid_statuses %}
+              <option value="{{ s }}" {{ 'selected' if s == ticket.status else '' }}>{{ status_labels[s] }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div><button type="submit" class="btn secondary">Save status</button></div>
+      </form>
+
+      <form method="post" action="{{ url_for('update_priority', ticket_id=ticket.ticket_id) }}"
+            class="inline-form">
+        <div>
+          <label for="priority">Priority</label>
+          <select id="priority" name="priority">
+            {% for p in valid_priorities %}
+              <option value="{{ p }}" {{ 'selected' if p == ticket.priority else '' }}>{{ priority_labels[p] }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div><button type="submit" class="btn secondary">Save priority</button></div>
+      </form>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Messages</h2>
+    {% if messages %}
+      {% for m in messages %}
+        <div class="msg">
+          <div class="meta"><span class="author">{{ m.author }}</span></div>
+          <div>{{ m.message_text }}</div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="empty">No messages on this ticket yet.</p>
+    {% endif %}
+  </div>
+
+  <div class="card">
+    <h2>Add a message</h2>
+    <form method="post" action="{{ url_for('add_message', ticket_id=ticket.ticket_id) }}">
+      <div style="max-width: 260px;">
+        <label for="author">Your name</label>
+        <input type="text" id="author" name="author" placeholder="e.g. support.bot" required>
+      </div>
+      <div style="margin-top:12px;">
+        <label for="message_text">Message</label>
+        <textarea id="message_text" name="message_text" placeholder="Type your reply…" required></textarea>
+      </div>
+      <div class="actions">
+        <button type="submit" class="btn">Add message</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="card">
+    <h2>Danger zone</h2>
+    <p class="muted" style="margin-top:0;">Deleting a ticket also removes all of its messages.</p>
+    <a class="btn danger" href="{{ url_for('confirm_delete', ticket_id=ticket.ticket_id) }}">Delete ticket</a>
+  </div>
+{% endblock %}
