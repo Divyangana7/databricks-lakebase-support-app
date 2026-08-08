@@ -1,0 +1,16 @@
+# Databricks Apps run configuration.
+# Databricks does not run this command in a shell, so no env-var expansion is
+# available except DATABRICKS_APP_PORT. `python app.py` is also the default
+# command, but we set it explicitly for clarity.
+command: ["python", "app.py"]
+
+env:
+  # These two match the defaults baked into lakebase.py. They tell the app which
+  # Databricks secret scope/key holds the Lakebase connection URL.
+  - name: "LAKEBASE_SECRET_SCOPE"
+    value: "database"
+  - name: "LAKEBASE_SECRET_KEY"
+    value: "lakebase-url"
+  # Used to sign Flask flash-message cookies. Replace with any random string.
+  - name: "FLASK_SECRET_KEY"
+    value: "replace-with-a-random-string"
