@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Support{% endblock %} · Internal Support</title>
+  <style>
+    :root {
+      --ink: #16232c;
+      --muted: #5d707b;
+      --page: #eef1f3;
+      --card: #ffffff;
+      --border: #d8e0e4;
+      --accent: #0f6b73;
+      --accent-hover: #0c565c;
+      --open-bg: #fdf1dd;      --open-fg: #9a6412;
+      --progress-bg: #e4eefb;  --progress-fg: #24608f;
+      --resolved-bg: #e2f2ea;  --resolved-fg: #237a54;
+      --danger-bg: #fbe6e6;    --danger-fg: #9b2c2c;
+      --ok-bg: #e2f2ea;        --ok-fg: #237a54;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--ink);
+      background: var(--page);
+      line-height: 1.5;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .topbar {
+      background: var(--ink);
+      color: #fff;
+      padding: 14px 0;
+    }
+    .topbar .wrap { display: flex; align-items: baseline; gap: 12px; }
+    .topbar .brand { font-weight: 650; letter-spacing: .2px; }
+    .topbar .brand a { color: #fff; }
+    .topbar .tag {
+      font-size: 12px; color: #a9bcc4; text-transform: uppercase; letter-spacing: 1px;
+    }
+    .wrap { max-width: 920px; margin: 0 auto; padding: 0 20px; }
+    main { padding: 28px 0 60px; }
+    h1 { font-size: 22px; margin: 0 0 4px; }
+    h2 { font-size: 16px; margin: 0 0 12px; color: var(--muted); font-weight: 600; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+    .muted { color: var(--muted); }
+    .row { display: flex; gap: 14px; flex-wrap: wrap; }
+    .row > * { flex: 1 1 200px; }
+    label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; }
+    input[type=text], textarea, select {
+      width: 100%;
+      padding: 9px 11px;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      font: inherit;
+      background: #fff;
+      color: var(--ink);
+    }
+    input:focus, textarea:focus, select:focus {
+      outline: 2px solid var(--accent);
+      outline-offset: 1px;
+      border-color: var(--accent);
+    }
+    textarea { min-height: 84px; resize: vertical; }
+    .btn {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      padding: 9px 16px;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn:hover { background: var(--accent-hover); }
+    .btn.secondary {
+      background: #fff; color: var(--ink); border: 1px solid var(--border);
+    }
+    .btn.secondary:hover { background: #f3f6f7; }
+    .actions { margin-top: 14px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 11px 10px; border-bottom: 1px solid var(--border); }
+    th { font-size: 12px; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); }
+    tr:last-child td { border-bottom: none; }
+    .pill {
+      display: inline-block; font-size: 12px; font-weight: 650;
+      padding: 3px 10px; border-radius: 999px; white-space: nowrap;
+    }
+    .pill.open { background: var(--open-bg); color: var(--open-fg); }
+    .pill.in_progress { background: var(--progress-bg); color: var(--progress-fg); }
+    .pill.resolved { background: var(--resolved-bg); color: var(--resolved-fg); }
+    .flash { border-radius: 8px; padding: 11px 14px; margin-bottom: 18px; font-size: 14px; }
+    .flash.error { background: var(--danger-bg); color: var(--danger-fg); }
+    .flash.success { background: var(--ok-bg); color: var(--ok-fg); }
+    .msg { padding: 12px 0; border-bottom: 1px solid var(--border); }
+    .msg:last-child { border-bottom: none; }
+    .msg .meta { font-size: 13px; color: var(--muted); margin-bottom: 3px; }
+    .msg .author { font-weight: 650; color: var(--ink); }
+    .inline-form { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
+    .inline-form > div { flex: 0 0 auto; }
+    .empty { color: var(--muted); padding: 8px 0; }
+    .pill.low { background: #eef1f3; color: #5d707b; }
+    .pill.medium { background: #fdf1dd; color: #9a6412; }
+    .pill.high { background: #fbe6e6; color: #9b2c2c; }
+    .btn.danger { background: #b23b3b; }
+    .btn.danger:hover { background: #98302f; }
+    .filters { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 16px; }
+    .filters a {
+      font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 999px;
+      border: 1px solid var(--border); color: var(--muted); background: #fff;
+    }
+    .filters a:hover { text-decoration: none; background: #f3f6f7; }
+    .filters a.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .filters a .count { opacity: .7; margin-left: 4px; }
+    .between { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="wrap">
+      <span class="brand"><a href="{{ url_for('index') }}">Internal Support</a></span>
+      <span class="tag">Lakebase-backed</span>
+    </div>
+  </div>
+  <main class="wrap">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>
